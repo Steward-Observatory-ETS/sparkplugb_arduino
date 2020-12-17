@@ -95,8 +95,6 @@ public:
 
   void clear_payload();
 private:
-  uint64_t time;
-  uint64_t seq;
 };
 
 class sparkplugb_arduino_decoder{

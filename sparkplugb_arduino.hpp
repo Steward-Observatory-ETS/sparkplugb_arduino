@@ -85,29 +85,34 @@
 
 class sparkplugb_arduino_encoder{
 public:
-  org_eclipse_tahu_protobuf_Payload payload_in;
-  org_eclipse_tahu_protobuf_Payload payload_out;
-  org_eclipse_tahu_protobuf_Payload_Metric metrics_in[SPB_ARDUINO_METRICS_IN_SIZE];
-  org_eclipse_tahu_protobuf_Payload_Metric metrics_out[SPB_ARDUINO_METRICS_OUT_SIZE];
-  char metric_in_names[SPB_ARDUINO_METRICS_IN_SIZE][SPB_ARDUINO_METRIC_NAME_SIZE];
+  org_eclipse_tahu_protobuf_Payload payload;
+  org_eclipse_tahu_protobuf_Payload_Metric metrics[SPB_ARDUINO_METRICS_OUT_SIZE];
 
-  sparkplugb_arduino();
+  sparkplugb_arduino_encoder();
   void set_time(uint64_t time);
   size_t encode(uint8_t **buffer,
               size_t buffer_length);
 
-  /* Decode an inbound payload*/
-  bool decode(const void *binary_payload,
-              int binary_payloadlen);
-
-  void clear_payload_in();
-  void clear_payload_out();
+  void clear_payload();
 private:
   uint64_t time;
   uint64_t seq;
+};
+
+class sparkplugb_arduino_decoder{
+public:
+  org_eclipse_tahu_protobuf_Payload payload;
+  org_eclipse_tahu_protobuf_Payload_Metric metrics[SPB_ARDUINO_METRICS_IN_SIZE];
+  char metric_names[SPB_ARDUINO_METRICS_IN_SIZE][SPB_ARDUINO_METRIC_NAME_SIZE];
+
+  sparkplugb_arduino_decoder();
+  bool decode(const void *binary_payload,
+              int binary_payloadlen);
+
+  void clear_payload();
+private:
   bool decode_metric(org_eclipse_tahu_protobuf_Payload_Metric *metric,
                     pb_istream_t *stream, int index);
 
 };
-
 #endif

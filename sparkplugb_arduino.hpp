@@ -1,19 +1,42 @@
+/********************************************************************************
+ * Copyright 2020 Steward Observatory
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *   Steward Observatory - Port to C++ & modifications for Teensy 4.1 usage
+ ********************************************************************************/
+/*
+This project is a port of Eclipse Tahu sutable for a microcontroller, such as
+the Teensy 4.1.
+2020 M. Sibayan, Steward Observatory
+*/
 #ifndef __SPARKPLUGB_ARDUINO_H__
 #define __SPARKPLUGB_ARDUINO_H__
 #include "tahu.pb.h"
 
+// define array size of inbound (recieved) metrics
 #ifndef SPB_ARDUINO_METRICS_IN_SIZE
 #define SPB_ARDUINO_METRICS_IN_SIZE 1
 #endif
+
+// define array size of outbound (transmitted) metrics
 #ifndef SPB_ARDUINO_METRICS_OUT_SIZE
 #define SPB_ARDUINO_METRICS_OUT_SIZE 1
 #endif
+
+// define array length for each metrics name field
 #ifndef SPB_ARDUINO_METRIC_NAME_SIZE
 #define SPB_ARDUINO_METRIC_NAME_SIZE 48
 #endif
 
-
+//----------------------------------------------------------------------------//
 // Constants
+// copied from tahu.h, Copyright (c) 2014-2019 Cirrus Link Solutions and others
 #define DATA_SET_DATA_TYPE_UNKNOWN 0
 #define DATA_SET_DATA_TYPE_INT8 1
 #define DATA_SET_DATA_TYPE_INT16 2
@@ -82,7 +105,11 @@
 #define PROPERTY_DATA_TYPE_STRING 12
 #define PROPERTY_DATA_TYPE_DATETIME 13
 #define PROPERTY_DATA_TYPE_TEXT 14
+//----------------------------------------------------------------------------//
 
+/*
+@brief Encoder for Sparkplug B MQTT protocol
+*/
 class sparkplugb_arduino_encoder{
 public:
   org_eclipse_tahu_protobuf_Payload payload;
@@ -97,6 +124,9 @@ public:
 private:
 };
 
+/*
+@brief Decoder for Sparkplug B MQTT protocol
+*/
 class sparkplugb_arduino_decoder{
 public:
   org_eclipse_tahu_protobuf_Payload payload;

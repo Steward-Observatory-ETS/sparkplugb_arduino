@@ -1,0 +1,14 @@
+/********************************************************************************
+ * Copyright (c) 2014-2019 Cirrus Link Solutions and others
+ * Copyright 2020 University of Arizona Steward Observatory
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0.
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *   Cirrus Link Solutions - initial implementation
+ *   Steward Observatory - Port to C++ & modifications for Teensy 4.1 usage
+ ********************************************************************************/

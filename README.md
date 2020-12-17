@@ -4,13 +4,15 @@ Currently this library only supports VERY SIMPLE payloads with simple metrics.
 The encoder supports more than the decoder, since we can more easily control
 what we are sending outbound.
 
-=TODO=
+### TODO
+
 1. Error checking for writing too many metrics
 1. Error checking for writing strings that are too long.
 1. Add support for string data
 1. Separate Encode and Decode to save space if not using both
- 
-==Encoder==
+
+### Encoder
+
 This library allocates payload memory based on the following macros:
 1. SPB_ARDUINO_METRICS_OUT_SIZE, array size of outbound metrics.
 
@@ -29,7 +31,8 @@ The user must also set the has_seq and/or has_timestamp fields:
 1. encoder.payload.has_seq, true if the payload has a sequence number
 2. encoder.payload.metric[i].has_timestamp, true if the metric has a timestamp
 
-==Decoder==
+### Decoder
+
 1. SPB_ARDUINO_METRICS_IN_SIZE, array size of inbound metrics.
 1. SPB_ARDUINO_METRIC_NAME_SIZE, inbound metric name array size.
 

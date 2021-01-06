@@ -4,6 +4,13 @@ Currently this library only supports VERY SIMPLE payloads with simple metrics.
 The encoder supports more than the decoder, since we can more easily control
 what we are sending outbound.
 
+This project is based on Eclipse Tahu ( https://github.com/eclipse/tahu ) and
+uses source from /client_libraries/c
+
+All Tahu code is Copyright (c) 2014-2019 Cirrus Link Solutions and others
+and released under the Eclipse Public License 2.0 which is available at
+http://www.eclipse.org/legal/epl-2.0
+
 ### TODO
 
 1. Error checking for writing too many metrics

@@ -17,8 +17,7 @@
  Modified/Ported by M. Sibayan 11/2020
  to make it compatable with a Teensy 4.1 and Arduino
  - remove printf and related
- - remove time calls in get_current_timestamp
- + added function set_tahu_time to allow setting timestamp
+ - remove time calls and get_current_timestamp
  + changed to pre-allocated memory for metrics, limits size to pre-defined
 */
 
@@ -36,6 +35,7 @@ sparkplugb_arduino_encoder::sparkplugb_arduino_encoder(){
   this->clear_payload();
 }
 
+// perform the encoding using the object's payload data
 size_t sparkplugb_arduino_encoder::encode(uint8_t **buffer,
                   size_t buffer_length)
 {
@@ -52,6 +52,17 @@ size_t sparkplugb_arduino_encoder::encode(uint8_t **buffer,
   return message_length;
 }
 
+// if we have metrics, use the memory allocated.. if not, set to NULL
+void sparkplugb_arduino_encoder::set_has_metrics(bool flag){
+  if(flag){
+    this->payload.metrics = this->metrics;
+  }
+  else{
+    this->payload.metrics = NULL;
+  }
+}
+
+// zero out payload and all metrics
 void sparkplugb_arduino_encoder::clear_payload(){
   int i;
   this->payload = org_eclipse_tahu_protobuf_Payload_init_zero;

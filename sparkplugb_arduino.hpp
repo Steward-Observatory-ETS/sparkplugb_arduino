@@ -116,7 +116,7 @@ public:
   org_eclipse_tahu_protobuf_Payload_Metric metrics[SPB_ARDUINO_METRICS_OUT_SIZE];
 
   sparkplugb_arduino_encoder();
-  void set_time(uint64_t time);
+  void set_has_metrics(bool flag);
   size_t encode(uint8_t **buffer,
               size_t buffer_length);
 

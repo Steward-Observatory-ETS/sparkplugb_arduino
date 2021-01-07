@@ -100,8 +100,8 @@ void setup() {
 
   // specifiy the data type for each column, this needs to be a "DATA_SET_DATA_TYPE"
   memset(feedback_data_types, 0, sizeof(feedback_data_types));
-  feedback_data_types[0] = DATA_SET_DATA_TYPE_INT32;
-  feedback_data_types[1] = DATA_SET_DATA_TYPE_BOOLEAN;
+  feedback_data_types[0] = DATA_SET_DATA_TYPE_INT32; // column 0
+  feedback_data_types[1] = DATA_SET_DATA_TYPE_BOOLEAN; // column 1
 
   // dataset
   spark.metrics[0].value.dataset_value = org_eclipse_tahu_protobuf_Payload_DataSet_init_default;
@@ -231,7 +231,7 @@ void loop(){
     mmqtClient.publish(MQTT_TOPIC, binary_buffer, message_length, 0);
     mmqtClient.loop();
 
-    ledVal = !ledVal;
+    ledVal = !ledVal; // toggle the LED so we know we're alive!
   }
   pinMode(ledPin, OUTPUT);
   digitalWrite(ledPin, ledVal);

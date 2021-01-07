@@ -11,6 +11,17 @@ http://www.eclipse.org/legal/epl-2.0.
 Test program for sparkplugb_arduino library, written for a Teensy 4.1
 This program periodically sends data to a an MMQT broker, encoded as Sparkplug B
 
+This program generates a 2-row by 2-column data set.
+Column 1 is a 32-bit integer
+Column 2 is a boolean value
+
+*** Important Notes ***
+---> Failure to follow the below rules may cause garbage messages!
+- The number of columns, num_of_columns, dictates number of row elements, elements_count
+- Number of names, col_names, must be equal to num_of_columns
+- Number of data types, types_count, must be equal to num_of_columns
+- rows_count determines number of rows, not number of elements in a row
+
 2020 M. Sibayan
 */
 
@@ -33,21 +44,26 @@ IPAddress mqtt_server(192, 168, 249, 98); // IP address of MQTT broker
 EthernetClient enetClient;
 PubSubClient mmqtClient(enetClient);
 const char* MQTT_TOPIC = "spBv1.0/dev/DDATA/Teensy/dataset";
+
+// Sparkplug
+sparkplugb_arduino_encoder spark; // splarkplug b encoder object
 const char* METRICS_NAME = "feedback";
-sparkplugb_arduino_encoder spark;
 #define BINARY_BUFFER_SIZE 256
 uint8_t binary_buffer[BINARY_BUFFER_SIZE]; // buffer for writing data to the network
-#define FEEDBACK_DATA_COUNT 10
-org_eclipse_tahu_protobuf_Payload_DataSet_Row feedback_data_rows[1];
-_org_eclipse_tahu_protobuf_Payload_DataSet_DataSetValue feedback_data_values[FEEDBACK_DATA_COUNT];
-uint32_t feedback_data_types[10];
-char *col_names[10];
-char col0_name[5];
-char col1_name[5];
-char col2_name[5];
-char col3_name[5];
-const int ledPin = 13;
-bool ledVal;
+org_eclipse_tahu_protobuf_Payload_DataSet_Row feedback_data_rows[2];
+org_eclipse_tahu_protobuf_Payload_DataSet_DataSetValue feedback_data_values1[2];
+org_eclipse_tahu_protobuf_Payload_DataSet_DataSetValue feedback_data_values2[2];
+uint32_t feedback_data_types[2]; // feedback types for dataset
+char *col_names[2]; // pointers to column names
+char col0_name[5]; // buffer for column name 1
+char col1_name[5]; // buffer for column name 2
+
+// other globals
+const int ledPin = 13; // diagnositic LED pin number
+bool ledVal; // diagnositic LED value
+int32_t fib; // current fibonacci value
+int32_t fib_a; // fn-1
+int32_t fib_b; // fn-2
 
 // ============== MQTT Subscription callback ===================================
 void callback(char* topic, byte* payload, unsigned int length){
@@ -57,15 +73,10 @@ void callback(char* topic, byte* payload, unsigned int length){
 
 // ============== Setup all objects ============================================
 void setup() {
-  int i; // iterator
   strcpy(col0_name, "col0\0");
   strcpy(col1_name, "col1\0");
-  strcpy(col2_name, "col2\0");
-  strcpy(col3_name, "col3\0");
   col_names[0] = col0_name;
   col_names[1] = col1_name;
-  col_names[2] = col2_name;
-  col_names[3] = col3_name;
 
   // --------- TAHU -----------------
   // create a payload and fill in the struct with appropriate values
@@ -88,45 +99,58 @@ void setup() {
   // ^^ This needs to be a "value tag"
 
   // specifiy the data type for each column, this needs to be a "DATA_SET_DATA_TYPE"
+  memset(feedback_data_types, 0, sizeof(feedback_data_types));
   feedback_data_types[0] = DATA_SET_DATA_TYPE_INT32;
-  // **WARNING** if the above is not a DATA_SET_DATA_TYPE, data will fail to parse
+  feedback_data_types[1] = DATA_SET_DATA_TYPE_BOOLEAN;
 
   // dataset
   spark.metrics[0].value.dataset_value = org_eclipse_tahu_protobuf_Payload_DataSet_init_default;
 
   spark.metrics[0].value.dataset_value.has_num_of_columns = true;
-  spark.metrics[0].value.dataset_value.num_of_columns = 1;
-  spark.metrics[0].value.dataset_value.columns_count = 1;
+  spark.metrics[0].value.dataset_value.num_of_columns = 2;
+  spark.metrics[0].value.dataset_value.columns_count = 2;
   spark.metrics[0].value.dataset_value.columns = col_names;
-  spark.metrics[0].value.dataset_value.types_count = 1;
+  spark.metrics[0].value.dataset_value.types_count = 2;
   spark.metrics[0].value.dataset_value.types = feedback_data_types;
-  spark.metrics[0].value.dataset_value.rows_count = 1;
+  spark.metrics[0].value.dataset_value.rows_count = 2;
   spark.metrics[0].value.dataset_value.rows = feedback_data_rows;
   spark.metrics[0].value.dataset_value.extensions = NULL;
 
   // initialize the rows
+  memset(feedback_data_rows, 0, sizeof(feedback_data_rows));
   feedback_data_rows[0] = org_eclipse_tahu_protobuf_Payload_DataSet_Row_init_default;
-  feedback_data_rows[0].elements_count = 1;
-  feedback_data_rows[0].elements = feedback_data_values;
+  feedback_data_rows[0].elements_count = 2;
+  feedback_data_rows[0].elements = feedback_data_values1;
+  feedback_data_rows[1] = org_eclipse_tahu_protobuf_Payload_DataSet_Row_init_default;
+  feedback_data_rows[1].elements_count = 2;
+  feedback_data_rows[1].elements = feedback_data_values2;
 
-  feedback_data_values[0] = org_eclipse_tahu_protobuf_Payload_DataSet_DataSetValue_init_default;
+  memset(feedback_data_values1, 0, sizeof(feedback_data_values1));
+  feedback_data_values1[0] = org_eclipse_tahu_protobuf_Payload_DataSet_DataSetValue_init_default;
 
-  feedback_data_values[0].which_value = org_eclipse_tahu_protobuf_Payload_DataSet_DataSetValue_int_value_tag;
+  feedback_data_values1[0].which_value = org_eclipse_tahu_protobuf_Payload_DataSet_DataSetValue_int_value_tag;
 
-  feedback_data_values[0].value.int_value = 1234;
+  feedback_data_values1[0].value.int_value = 0;
 
-/*
-  feedback_data_rows[0].elements_count = FEEDBACK_DATA_COUNT;
-  feedback_data_rows[0].elements = feedback_data_values;
-  feedback_data_rows[0].extensions = NULL;
+  feedback_data_values1[1] = org_eclipse_tahu_protobuf_Payload_DataSet_DataSetValue_init_default;
 
+  feedback_data_values1[1].which_value = org_eclipse_tahu_protobuf_Payload_DataSet_DataSetValue_boolean_value_tag;
 
-  for(i=0; i<FEEDBACK_DATA_COUNT; i++){
-    feedback_data_values[i] = org_eclipse_tahu_protobuf_Payload_DataSet_DataSetValue_init_default;
-    feedback_data_values[i].which_value = org_eclipse_tahu_protobuf_Payload_DataSet_DataSetValue_int_value_tag;
-    feedback_data_values[i].value.int_value = i;
-  }
-*/
+  feedback_data_values1[1].value.int_value = false;
+
+  memset(feedback_data_values2, 0, sizeof(feedback_data_values2));
+  feedback_data_values2[0] = org_eclipse_tahu_protobuf_Payload_DataSet_DataSetValue_init_default;
+
+  feedback_data_values2[0].which_value = org_eclipse_tahu_protobuf_Payload_DataSet_DataSetValue_int_value_tag;
+
+  feedback_data_values2[0].value.boolean_value = 0;
+
+  feedback_data_values2[1] = org_eclipse_tahu_protobuf_Payload_DataSet_DataSetValue_init_default;
+
+  feedback_data_values2[1].which_value = org_eclipse_tahu_protobuf_Payload_DataSet_DataSetValue_boolean_value_tag;
+
+  feedback_data_values2[1].value.boolean_value = false;
+
   // ------- END TAHU --------------
 
   // set LED pin as an output
@@ -154,11 +178,15 @@ void setup() {
   // ----- Setup MqttClient ----------------
   mmqtClient.setServer(mqtt_server, 1883);
   mmqtClient.setCallback(callback);
+
+  // initial values for fibonacci
+  fib = 0;
+  fib_a = 0;
+  fib_b = 1;
 }
 
 void loop(){
-  int message_length, i;
-  static int j = 0;
+  int message_length;
 
   if(!mmqtClient.connected()){
     if(mmqtClient.connect("Teensy1")){
@@ -171,15 +199,28 @@ void loop(){
   }
 
   if(mmqtClient.connected()){
+    // compute next value in fibonacci sequence
+    fib = fib_a + fib_b;
+    if(fib < fib_b){
+      fib = 0;
+      fib_a = 0;
+      fib_b = 1;
+    }
+    else{
+      fib_a = fib_b;
+      fib_b = fib;
+    }
 
     // Fill in the payload data
         // If we were keeping track of the time we could set the timestamp
         //spark.payload.timestamp = timeClient.getUTCEpochTime();
         //spark.payload.metrics[0].timestamp = timeClient.getUTCEpochTime();
-    for(i=0; i<FEEDBACK_DATA_COUNT; i++){
-      //feedback_data_values[i].value.int_value = i + j;
-    }
-    j = j + FEEDBACK_DATA_COUNT;
+
+    feedback_data_values1[0].value.int_value = fib;
+    feedback_data_values1[1].value.boolean_value = ledVal;
+    feedback_data_values2[0].value.int_value = fib * -1;
+    feedback_data_values2[1].value.boolean_value = !ledVal;
+
     spark.payload.seq++;
     uint8_t *buf_ptr = (uint8_t*)binary_buffer;
 

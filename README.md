@@ -17,6 +17,7 @@ http://www.eclipse.org/legal/epl-2.0
 1. Error checking for writing strings that are too long.
 1. Add support for string data
 1. Separate Encode and Decode to save space if not using both
+1. Add support for UUID in payload
 
 ### Encoder
 

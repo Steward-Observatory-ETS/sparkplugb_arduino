@@ -19,19 +19,9 @@ the Teensy 4.1.
 #define __SPARKPLUGB_ARDUINO_H__
 #include "tahu.pb.h"
 
-// define array size of inbound (recieved) metrics
-#ifndef SPB_ARDUINO_METRICS_IN_SIZE
-#define SPB_ARDUINO_METRICS_IN_SIZE 1
-#endif
-
 // define array size of outbound (transmitted) metrics
 #ifndef SPB_ARDUINO_METRICS_OUT_SIZE
 #define SPB_ARDUINO_METRICS_OUT_SIZE 1
-#endif
-
-// define array length for each metrics name field
-#ifndef SPB_ARDUINO_METRIC_NAME_SIZE
-#define SPB_ARDUINO_METRIC_NAME_SIZE 48
 #endif
 
 //----------------------------------------------------------------------------//
@@ -112,14 +102,35 @@ the Teensy 4.1.
 */
 class sparkplugb_arduino_encoder{
 public:
+  // space to store payload data
   org_eclipse_tahu_protobuf_Payload payload;
+
+  // space to store metrics data
   org_eclipse_tahu_protobuf_Payload_Metric metrics[SPB_ARDUINO_METRICS_OUT_SIZE];
 
+  // constructor
   sparkplugb_arduino_encoder();
+
+  /*
+  @brief let the encoder know if we are using metrics, assigns the pointer
+  @param flag true = assign the pointer to metrics, false = assign pointer to null
+  */
   void set_has_metrics(bool flag);
+
+  /*
+  @brief perform an encode
+  @param buffer buffer to store encoded binary data
+  @param buffer_length size of the buffer
+
+  This function encodes the payload in to the binary buffer provided as an arg.
+  It basically creates a stream and calls pb_encode.
+  */
   size_t encode(uint8_t **buffer,
               size_t buffer_length);
 
+  /*
+  @brief clear (zeros) the payload and metric data
+  */
   void clear_payload();
 private:
 };
@@ -129,18 +140,27 @@ private:
 */
 class sparkplugb_arduino_decoder{
 public:
+  // space to store payload data
   org_eclipse_tahu_protobuf_Payload payload;
-  org_eclipse_tahu_protobuf_Payload_Metric metrics[SPB_ARDUINO_METRICS_IN_SIZE];
-  char metric_names[SPB_ARDUINO_METRICS_IN_SIZE][SPB_ARDUINO_METRIC_NAME_SIZE];
 
-  sparkplugb_arduino_decoder();
-  bool decode(const void *binary_payload,
-              int binary_payloadlen);
+  sparkplugb_arduino_decoder(); // constructor
 
-  void clear_payload();
+  /*
+  @brief perform a decode
+  @param binary_payload inbound encoded binary data
+  @param binary_payloadlen size of the binary payload data
+
+  This function decodes the payload in to payload.
+  It basically creates a stream and calls pb_decode.
+  */
+  bool decode(const pb_byte_t *binary_payload, size_t binary_payloadlen);
+
+  /*
+  @brief free the payload's dynamiclly allocated memory and zero the payload.
+
+  This function basically calls pb_release and sets the payload data to zero.
+  */
+  void free_payload();
 private:
-  bool decode_metric(org_eclipse_tahu_protobuf_Payload_Metric *metric,
-                    pb_istream_t *stream, int index);
-
 };
 #endif

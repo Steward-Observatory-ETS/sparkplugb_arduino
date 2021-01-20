@@ -26,6 +26,11 @@ sparkplugb_arduino_encoder::sparkplugb_arduino_encoder(){
   this->payload = NULL;
 }
 
+// set the payload pointer
+void sparkplugb_arduino_encoder::set_payload(org_eclipse_tahu_protobuf_Payload* payload){
+  this->payload = payload;
+}
+
 // perform the encoding using the object's payload data
 size_t sparkplugb_arduino_encoder::encode(uint8_t **buffer,
                   size_t buffer_length)

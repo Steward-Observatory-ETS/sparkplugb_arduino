@@ -49,6 +49,7 @@ sparkplugb_arduino_encoder spark; // splarkplug b encoder object
 const char* METRICS_NAME = "feedback";
 #define BINARY_BUFFER_SIZE 1024
 uint8_t binary_buffer[BINARY_BUFFER_SIZE]; // buffer for writing data to the network
+org_eclipse_tahu_protobuf_Payload_Metric metrics[1];
 org_eclipse_tahu_protobuf_Payload_DataSet_Row feedback_data_rows[1];
 org_eclipse_tahu_protobuf_Payload_DataSet_DataSetValue feedback_data_values[12];
 uint32_t feedback_data_types[12]; // feedback types for dataset
@@ -86,22 +87,22 @@ void setup() {
 
   // --------- TAHU -----------------
   // create a payload and fill in the struct with appropriate values
-  spark.set_has_metrics(true); // tell obj to set the pointer to metrics data
+  spark.set_metrics(metrics, 1); // set pointer to metrics data
   spark.payload.metrics_count = 1; // we only have one metric
-  spark.metrics[0].name = (char*)METRICS_NAME; // name the metric
-  spark.metrics[0].has_alias = false; // not using aliases
-  //spark.metrics[0].alias = 0;
-  spark.metrics[0].has_timestamp = true; // yes we are using timestamps
-  spark.metrics[0].timestamp = 0; // not assigned yet
-  spark.metrics[0].has_datatype = true; // yes it has a data type
-  spark.metrics[0].datatype = METRIC_DATA_TYPE_DATASET;
-  spark.metrics[0].has_is_historical = false;
-  spark.metrics[0].has_is_transient = false;
-  spark.metrics[0].has_is_null = false;
-  spark.metrics[0].has_metadata = false;
-  spark.metrics[0].has_properties = false;
-  spark.metrics[0].value.string_value = NULL;
-  spark.metrics[0].which_value = org_eclipse_tahu_protobuf_Payload_Metric_dataset_value_tag;
+  metrics[0].name = (char*)METRICS_NAME; // name the metric
+  metrics[0].has_alias = false; // not using aliases
+  //metrics[0].alias = 0;
+  metrics[0].has_timestamp = true; // yes we are using timestamps
+  metrics[0].timestamp = 0; // not assigned yet
+  metrics[0].has_datatype = true; // yes it has a data type
+  metrics[0].datatype = METRIC_DATA_TYPE_DATASET;
+  metrics[0].has_is_historical = false;
+  metrics[0].has_is_transient = false;
+  metrics[0].has_is_null = false;
+  metrics[0].has_metadata = false;
+  metrics[0].has_properties = false;
+  metrics[0].value.string_value = NULL;
+  metrics[0].which_value = org_eclipse_tahu_protobuf_Payload_Metric_dataset_value_tag;
   // ^^ This needs to be a "value tag"
 
   // specifiy the data type for each column, this needs to be a "DATA_SET_DATA_TYPE"
@@ -111,17 +112,17 @@ void setup() {
   }
 
   // dataset
-  spark.metrics[0].value.dataset_value = org_eclipse_tahu_protobuf_Payload_DataSet_init_default;
+  metrics[0].value.dataset_value = org_eclipse_tahu_protobuf_Payload_DataSet_init_default;
 
-  spark.metrics[0].value.dataset_value.has_num_of_columns = true;
-  spark.metrics[0].value.dataset_value.num_of_columns = 12;
-  spark.metrics[0].value.dataset_value.columns_count = 12;
-  spark.metrics[0].value.dataset_value.columns = names;
-  spark.metrics[0].value.dataset_value.types_count = 12;
-  spark.metrics[0].value.dataset_value.types = feedback_data_types;
-  spark.metrics[0].value.dataset_value.rows_count = 1;
-  spark.metrics[0].value.dataset_value.rows = feedback_data_rows;
-  spark.metrics[0].value.dataset_value.extensions = NULL;
+  metrics[0].value.dataset_value.has_num_of_columns = true;
+  metrics[0].value.dataset_value.num_of_columns = 12;
+  metrics[0].value.dataset_value.columns_count = 12;
+  metrics[0].value.dataset_value.columns = names;
+  metrics[0].value.dataset_value.types_count = 12;
+  metrics[0].value.dataset_value.types = feedback_data_types;
+  metrics[0].value.dataset_value.rows_count = 1;
+  metrics[0].value.dataset_value.rows = feedback_data_rows;
+  metrics[0].value.dataset_value.extensions = NULL;
 
   // initialize the rows
   memset(feedback_data_rows, 0, sizeof(feedback_data_rows));

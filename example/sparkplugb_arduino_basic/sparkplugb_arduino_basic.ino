@@ -36,6 +36,7 @@ const char* MQTT_TOPIC = "spBv1.0/dev/DDATA/Teensy/fib";
 sparkplugb_arduino_encoder spark;
 #define BINARY_BUFFER_SIZE 256
 uint8_t binary_buffer[BINARY_BUFFER_SIZE]; // buffer for writing data to the network
+org_eclipse_tahu_protobuf_Payload_Metric metrics[1];
 
 const int ledPin = 13;
 bool ledVal;
@@ -53,23 +54,23 @@ void callback(char* topic, byte* payload, unsigned int length){
 void setup() {
   // --------- TAHU -----------------
   // create a payload and fill in the struct with appropriate values
-  spark.set_has_metrics(true); // tell obj to set the pointer to metrics data
+  spark.set_metrics(metrics, 1); // tell obj to set the pointer to metrics data
   spark.payload.metrics_count = 1; // we only have one metric
-  spark.metrics[0].name = "fibonacci"; // name the metric
-  spark.metrics[0].has_alias = false; // not using aliases
-  //spark.metrics[0].alias = 0;
-  spark.metrics[0].has_timestamp = true; // yes we are using timestamps
-  spark.metrics[0].timestamp = 0; // not assigned yet
-  spark.metrics[0].has_datatype = true; // yes it has a data type
-  spark.metrics[0].datatype = METRIC_DATA_TYPE_INT32;
-  spark.metrics[0].has_is_historical = false;
-  spark.metrics[0].has_is_transient = false;
-  spark.metrics[0].has_is_null = false;
-  spark.metrics[0].has_metadata = false;
-  spark.metrics[0].has_properties = false;
-  spark.metrics[0].value.string_value = NULL;
-  spark.metrics[0].which_value = org_eclipse_tahu_protobuf_Payload_Metric_int_value_tag;
-  spark.metrics[0].value.int_value = 0;
+  metrics[0].name = "fibonacci"; // name the metric
+  metrics[0].has_alias = false; // not using aliases
+  //metrics[0].alias = 0;
+  metrics[0].has_timestamp = true; // yes we are using timestamps
+  metrics[0].timestamp = 0; // not assigned yet
+  metrics[0].has_datatype = true; // yes it has a data type
+  metrics[0].datatype = METRIC_DATA_TYPE_INT32;
+  metrics[0].has_is_historical = false;
+  metrics[0].has_is_transient = false;
+  metrics[0].has_is_null = false;
+  metrics[0].has_metadata = false;
+  metrics[0].has_properties = false;
+  metrics[0].value.string_value = NULL;
+  metrics[0].which_value = org_eclipse_tahu_protobuf_Payload_Metric_int_value_tag;
+  metrics[0].value.int_value = 0;
   // ------- END TAHU --------------
 
   // initial values for fibonacci

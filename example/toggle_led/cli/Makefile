@@ -20,7 +20,7 @@ CFLAGS = -g -Wall
 
 client:
 	$(CC) ../../../pb_common.c ../../../pb_decode.c ../../../pb_encode.c \
-		../../../exclude/tahu.c ../../../tahu.pb.c -I../../../ -I../../../exclude\
+		../../../tahu.c ../../../tahu.pb.c -I../../../ \
 		led_client.c -D__TEST_CLIENT__=1 -o led $(CFLAGS) $(LIBS)
 
 clean:

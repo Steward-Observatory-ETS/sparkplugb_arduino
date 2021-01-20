@@ -23,7 +23,7 @@
 //                               Encoder
 //----------------------------------------------------------------------------//
 sparkplugb_arduino_encoder::sparkplugb_arduino_encoder(){
-  this->clear_payload();
+  this->payload = NULL;
 }
 
 // perform the encoding using the object's payload data
@@ -32,6 +32,8 @@ size_t sparkplugb_arduino_encoder::encode(uint8_t **buffer,
 {
   size_t message_length;
   bool node_status;
+  if(this->payload == NULL) return -1;
+
   // Create the stream
   pb_ostream_t node_stream = pb_ostream_from_buffer(*buffer, buffer_length);
   node_status = pb_encode(&node_stream, org_eclipse_tahu_protobuf_Payload_fields, &this->payload);
@@ -44,18 +46,23 @@ size_t sparkplugb_arduino_encoder::encode(uint8_t **buffer,
 }
 
 // assign payload.metrics and payload.metrics_count
-void sparkplugb_arduino_encoder::set_metrics(org_eclipse_tahu_protobuf_Payload_Metric* metrics, int count){
-  this->payload.metrics = metrics;
-  this->payload.metrics_count = count;
+bool sparkplugb_arduino_encoder::set_metrics(org_eclipse_tahu_protobuf_Payload_Metric* metrics, int count){
+  if(this->payload == NULL) return false;
+
+  this->payload->metrics = metrics;
+  this->payload->metrics_count = count;
+  return true;
 }
 
 // zero out payload and all metrics
 void sparkplugb_arduino_encoder::clear_payload(){
   int i;
-  for(i=0; i<this->payload.metrics_count; i++){
-    this->payload.metrics[i] = org_eclipse_tahu_protobuf_Payload_Metric_init_zero;
+  if(this->payload == NULL) return;
+
+  for(i=0; i<this->payload->metrics_count; i++){
+    this->payload->metrics[i] = org_eclipse_tahu_protobuf_Payload_Metric_init_zero;
   }
-  this->payload = org_eclipse_tahu_protobuf_Payload_init_zero;
+  *this->payload = org_eclipse_tahu_protobuf_Payload_init_zero;
 }
 
 

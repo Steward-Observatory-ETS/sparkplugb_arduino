@@ -98,10 +98,18 @@ the Teensy 4.1.
 class sparkplugb_arduino_encoder{
 public:
   // space to store payload data
-  org_eclipse_tahu_protobuf_Payload payload;
+  org_eclipse_tahu_protobuf_Payload* payload;
 
   // constructor
   sparkplugb_arduino_encoder();
+
+  /*
+  @brief Assigns object pointer to the payload
+  @param payload pointer to the payload struct
+
+  This function assigns the payload pointer
+  */
+  void set_payload(org_eclipse_tahu_protobuf_Payload* payload);
 
   /*
   @brief add metrics to the payload (assigns the pointer & sets the number)
@@ -110,7 +118,7 @@ public:
 
   This helper function assigns payload.metrics and payload.metrics_count
   */
-  void set_metrics(org_eclipse_tahu_protobuf_Payload_Metric* metrics, int count);
+  bool set_metrics(org_eclipse_tahu_protobuf_Payload_Metric* metrics, int count);
 
   /*
   @brief perform an encode

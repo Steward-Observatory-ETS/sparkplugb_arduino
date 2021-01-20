@@ -11,8 +11,8 @@ http://www.eclipse.org/legal/epl-2.0
 ### sparkplugb_arduino_encoder
 
 This class aims to help encode payloads that will be published by the client
-application. Only the payload struct is allocated by this class, and the
-developer is responsible for allocating metric, string, data, etc. memory.
+application. No payload data is allocated by this class, and the developer is
+responsible for allocating payload, metric, string, data, etc. memory.
 
 In order to provide a timestamp and sequence number, the user must update the
 payload and/or metric fields directly. These fields are:

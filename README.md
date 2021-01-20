@@ -1,8 +1,5 @@
-Arduino port of Eclipse Tahu implementation of Sparkplug B encoding/decoding
-
-Currently this library only supports VERY SIMPLE payloads with simple metrics.
-The encoder supports more than the decoder, since we can more easily control
-what we are sending outbound.
+Eclipse Tahu implementation of Sparkplug B with some simplified helpers sutible
+for Arduino.
 
 This project is based on Eclipse Tahu ( https://github.com/eclipse/tahu ) and
 uses source from /client_libraries/c
@@ -11,22 +8,11 @@ All Tahu code is Copyright (c) 2014-2019 Cirrus Link Solutions and others
 and released under the Eclipse Public License 2.0 which is available at
 http://www.eclipse.org/legal/epl-2.0
 
-### TODO
+### sparkplugb_arduino_encoder
 
-1. Error checking for writing too many metrics
-1. Error checking for writing strings that are too long.
-1. Add support for string data
-1. Separate Encode and Decode to save space if not using both
-1. Add support for UUID in payload
-
-### Encoder
-
-This library allocates payload memory based on the following macros:
-1. SPB_ARDUINO_METRICS_OUT_SIZE, array size of outbound metrics.
-
-If we're using the encoder and our payload has metrics, we need to allocate
-space for each metric. Set SPB_ARDUINO_METRICS_OUT_SIZE to the maximum metrics
-count to be used by the encoder.
+This class aims to help encode payloads that will be published by the client
+application. Only the payload struct is allocated by this class, and the
+developer is responsible for allocating metric, string, data, etc. memory.
 
 In order to provide a timestamp and sequence number, the user must update the
 payload and/or metric fields directly. These fields are:
@@ -41,12 +27,12 @@ The user must also set the has_seq and/or has_timestamp fields:
 
 ### Decoder
 
-1. SPB_ARDUINO_METRICS_IN_SIZE, array size of inbound metrics.
-1. SPB_ARDUINO_METRIC_NAME_SIZE, inbound metric name array size.
+The decoder uses pb_decode() which dynamically allocates memory as necessary.
+Base payload data is stored in decoder.payload, which can be read directly from
+the client program. The pb_decode function will build out the necessary structs
+for metrics, datasets, strings, etc. Special care must be taken to properly free
+memory after use using pb_release() or decoder.free_payload() as appropriate.
 
-If we're using the decoder and our payload has metrics, we need to allocate
-space for each metric. Set SPB_ARDUINO_METRICS_IN_SIZE to the maximum metrics
-count to be used by the decoder.
+### TODO
 
-If the inbound metrics have names, we need to allocate space for them. Set
-SPB_ARDUINO_METRIC_NAME_SIZE to the expected maximum name length.
+1. Add helper functions

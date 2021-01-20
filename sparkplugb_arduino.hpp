@@ -100,17 +100,8 @@ public:
   // space to store payload data
   org_eclipse_tahu_protobuf_Payload payload;
 
-  // space to store metrics data
-  //org_eclipse_tahu_protobuf_Payload_Metric metrics[SPB_ARDUINO_METRICS_OUT_SIZE];
-
   // constructor
   sparkplugb_arduino_encoder();
-
-  /*
-  @brief let the encoder know if we are using metrics, assigns the pointer
-  @param flag true = assign the pointer to metrics, false = assign pointer to null
-  */
-  //void set_has_metrics(bool flag);
 
   /*
   @brief add metrics to the payload (assigns the pointer & sets the number)
@@ -119,7 +110,7 @@ public:
 
   This helper function assigns payload.metrics and payload.metrics_count
   */
-  void add_metrics(org_eclipse_tahu_protobuf_Payload_Metric* metrics, int count);
+  void set_metrics(org_eclipse_tahu_protobuf_Payload_Metric* metrics, int count);
 
   /*
   @brief perform an encode

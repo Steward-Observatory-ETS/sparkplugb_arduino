@@ -9,17 +9,9 @@
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *   Cirrus Link Solutions - initial implementation
- *   Steward Observatory - Port to C++ & modifications for Teensy 4.1 usage
+ *   Cirrus Link Solutions - Tahu.c & Tahu.h origin implementation
+ *   Steward Observatory - Simplification for Teensy 4.1 usage
  ********************************************************************************/
-
-/*
- Modified/Ported by M. Sibayan 11/2020
- to make it compatable with a Teensy 4.1 and Arduino
- - remove printf and related
- - remove time calls and get_current_timestamp
- + changed to pre-allocated memory for metrics, limits size to pre-defined
-*/
 
 #include "string.h"
 #include "sparkplugb_arduino.hpp"
@@ -52,7 +44,7 @@ size_t sparkplugb_arduino_encoder::encode(uint8_t **buffer,
 }
 
 // assign payload.metrics and payload.metrics_count
-void sparkplugb_arduino_encoder::add_metrics(org_eclipse_tahu_protobuf_Payload_Metric* metrics, int count){
+void sparkplugb_arduino_encoder::set_metrics(org_eclipse_tahu_protobuf_Payload_Metric* metrics, int count){
   this->payload.metrics = metrics;
   this->payload.metrics_count = count;
 }

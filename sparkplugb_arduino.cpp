@@ -51,23 +51,19 @@ size_t sparkplugb_arduino_encoder::encode(uint8_t **buffer,
   return message_length;
 }
 
-// if we have metrics, use the memory allocated.. if not, set to NULL
-void sparkplugb_arduino_encoder::set_has_metrics(bool flag){
-  if(flag){
-    this->payload.metrics = this->metrics;
-  }
-  else{
-    this->payload.metrics = NULL;
-  }
+// assign payload.metrics and payload.metrics_count
+void sparkplugb_arduino_encoder::add_metrics(org_eclipse_tahu_protobuf_Payload_Metric* metrics, int count){
+  this->payload.metrics = metrics;
+  this->payload.metrics_count = count;
 }
 
 // zero out payload and all metrics
 void sparkplugb_arduino_encoder::clear_payload(){
   int i;
-  this->payload = org_eclipse_tahu_protobuf_Payload_init_zero;
-  for(i=0; i<SPB_ARDUINO_METRICS_OUT_SIZE; i++){
-    this->metrics[i] = org_eclipse_tahu_protobuf_Payload_Metric_init_zero;
+  for(i=0; i<this->payload.metrics_count; i++){
+    this->payload.metrics[i] = org_eclipse_tahu_protobuf_Payload_Metric_init_zero;
   }
+  this->payload = org_eclipse_tahu_protobuf_Payload_init_zero;
 }
 
 

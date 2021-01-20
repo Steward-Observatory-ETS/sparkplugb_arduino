@@ -19,11 +19,6 @@ the Teensy 4.1.
 #define __SPARKPLUGB_ARDUINO_H__
 #include "tahu.pb.h"
 
-// define array size of outbound (transmitted) metrics
-#ifndef SPB_ARDUINO_METRICS_OUT_SIZE
-#define SPB_ARDUINO_METRICS_OUT_SIZE 1
-#endif
-
 //----------------------------------------------------------------------------//
 // Constants
 // copied from tahu.h, Copyright (c) 2014-2019 Cirrus Link Solutions and others
@@ -106,7 +101,7 @@ public:
   org_eclipse_tahu_protobuf_Payload payload;
 
   // space to store metrics data
-  org_eclipse_tahu_protobuf_Payload_Metric metrics[SPB_ARDUINO_METRICS_OUT_SIZE];
+  //org_eclipse_tahu_protobuf_Payload_Metric metrics[SPB_ARDUINO_METRICS_OUT_SIZE];
 
   // constructor
   sparkplugb_arduino_encoder();
@@ -115,7 +110,16 @@ public:
   @brief let the encoder know if we are using metrics, assigns the pointer
   @param flag true = assign the pointer to metrics, false = assign pointer to null
   */
-  void set_has_metrics(bool flag);
+  //void set_has_metrics(bool flag);
+
+  /*
+  @brief add metrics to the payload (assigns the pointer & sets the number)
+  @param metrics pointer to the array of metrics
+  @param count length of the array of metrics
+
+  This helper function assigns payload.metrics and payload.metrics_count
+  */
+  void add_metrics(org_eclipse_tahu_protobuf_Payload_Metric* metrics, int count);
 
   /*
   @brief perform an encode

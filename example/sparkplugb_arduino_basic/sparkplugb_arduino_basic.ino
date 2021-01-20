@@ -34,6 +34,7 @@ EthernetClient enetClient;
 PubSubClient mmqtClient(enetClient);
 const char* MQTT_TOPIC = "spBv1.0/dev/DDATA/Teensy/fib";
 sparkplugb_arduino_encoder spark;
+org_eclipse_tahu_protobuf_Payload payload;
 #define BINARY_BUFFER_SIZE 256
 uint8_t binary_buffer[BINARY_BUFFER_SIZE]; // buffer for writing data to the network
 org_eclipse_tahu_protobuf_Payload_Metric metrics[1];
@@ -54,8 +55,8 @@ void callback(char* topic, byte* payload, unsigned int length){
 void setup() {
   // --------- TAHU -----------------
   // create a payload and fill in the struct with appropriate values
+  spark.set_payload(&payload);
   spark.set_metrics(metrics, 1); // tell obj to set the pointer to metrics data
-  spark.payload.metrics_count = 1; // we only have one metric
   metrics[0].name = "fibonacci"; // name the metric
   metrics[0].has_alias = false; // not using aliases
   //metrics[0].alias = 0;
@@ -135,8 +136,8 @@ void loop(){
         // If we were keeping track of the time we could set the timestamp
         //spark.payload.timestamp = timeClient.getUTCEpochTime();
         //spark.payload.metrics[0].timestamp = timeClient.getUTCEpochTime();
-    spark.payload.metrics[0].value.int_value = fib;
-    spark.payload.seq++;
+    payload.metrics[0].value.int_value = fib;
+    payload.seq++;
     uint8_t *buf_ptr = (uint8_t*)binary_buffer;
 
     // Encode the payload

@@ -50,6 +50,7 @@ sparkplugb_arduino_encoder spark; // splarkplug b encoder object
 const char* METRICS_NAME = "feedback";
 #define BINARY_BUFFER_SIZE 256
 uint8_t binary_buffer[BINARY_BUFFER_SIZE]; // buffer for writing data to the network
+org_eclipse_tahu_protobuf_Payload payload;
 org_eclipse_tahu_protobuf_Payload_Metric metrics[1];
 org_eclipse_tahu_protobuf_Payload_DataSet_Row feedback_data_rows[2];
 org_eclipse_tahu_protobuf_Payload_DataSet_DataSetValue feedback_data_values1[2];
@@ -81,6 +82,7 @@ void setup() {
 
   // --------- TAHU -----------------
   // create a payload and fill in the struct with appropriate values
+  spark.set_payload(&payload);
   spark.set_metrics(metrics, 1); // pointer to metrics data and size
   metrics[0].name = (char*)METRICS_NAME; // name the metric
   metrics[0].has_alias = false; // not using aliases
@@ -221,7 +223,7 @@ void loop(){
     feedback_data_values2[0].value.int_value = fib * -1;
     feedback_data_values2[1].value.boolean_value = !ledVal;
 
-    spark.payload.seq++;
+    payload.seq++;
     uint8_t *buf_ptr = (uint8_t*)binary_buffer;
 
     // Encode the payload

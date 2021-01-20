@@ -45,6 +45,19 @@ size_t sparkplugb_arduino_encoder::encode(uint8_t **buffer,
   return message_length;
 }
 
+// perform the encoding using the provided payload data
+size_t sparkplugb_arduino_encoder::encode(
+    org_eclipse_tahu_protobuf_Payload* payload,
+    uint8_t **buffer,
+    size_t buffer_length)
+{
+  size_t l;
+  org_eclipse_tahu_protobuf_Payload* tmp = this->payload;
+  l = this->encode(buffer, buffer_length);
+  this->payload = tmp;
+  return l;
+}
+
 // assign payload.metrics and payload.metrics_count
 bool sparkplugb_arduino_encoder::set_metrics(org_eclipse_tahu_protobuf_Payload_Metric* metrics, int count){
   if(this->payload == NULL) return false;

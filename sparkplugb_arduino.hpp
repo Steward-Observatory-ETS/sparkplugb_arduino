@@ -132,6 +132,16 @@ public:
               size_t buffer_length);
 
   /*
+  @brief perform an encode
+  @param buffer buffer to store encoded binary data
+  @param buffer_length size of the buffer
+
+  This function encodes the payload in to the binary buffer provided as an arg.
+  It basically creates a stream and calls pb_encode.
+  */
+  size_t encode(org_eclipse_tahu_protobuf_Payload* payload, uint8_t **buffer,
+              size_t buffer_length);
+  /*
   @brief clear (zeros) the payload and metric data
   */
   void clear_payload();

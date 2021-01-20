@@ -16,16 +16,16 @@ responsible for allocating payload, metric, string, data, etc. memory.
 
 In order to provide a timestamp and sequence number, the user must update the
 payload and/or metric fields directly. These fields are:
-1. encoder.payload.timestamp, message time stamp
-1. encoder.payload.seq, message sequence number
-1. encoder.payload.metrics[i].timestamp, metric time stamp
+1. payload.timestamp, message time stamp
+1. payload.seq, message sequence number
+1. payload.metrics[i].timestamp, metric time stamp
 
 The user must also set the has_seq and/or has_timestamp fields:
-1. encoder.payload.has_timestamp, true if the payload has a timestamp
-1. encoder.payload.has_seq, true if the payload has a sequence number
-2. encoder.payload.metric[i].has_timestamp, true if the metric has a timestamp
+1. payload.has_timestamp, true if the payload has a timestamp
+1. payload.has_seq, true if the payload has a sequence number
+2. payload.metric[i].has_timestamp, true if the metric has a timestamp
 
-### Decoder
+### sparkplugb_arduino_decoder
 
 The decoder uses pb_decode() which dynamically allocates memory as necessary.
 Base payload data is stored in decoder.payload, which can be read directly from

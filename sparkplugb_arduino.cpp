@@ -41,7 +41,7 @@ size_t sparkplugb_arduino_encoder::encode(uint8_t **buffer,
 
   // Create the stream
   pb_ostream_t node_stream = pb_ostream_from_buffer(*buffer, buffer_length);
-  node_status = pb_encode(&node_stream, org_eclipse_tahu_protobuf_Payload_fields, &this->payload);
+  node_status = pb_encode(&node_stream, org_eclipse_tahu_protobuf_Payload_fields, this->payload);
   message_length = node_stream.bytes_written;
 
   if (!node_status)

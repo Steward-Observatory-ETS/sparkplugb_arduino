@@ -128,7 +128,7 @@ public:
   This function encodes the payload in to the binary buffer provided as an arg.
   It basically creates a stream and calls pb_encode.
   */
-  size_t encode(uint8_t **buffer,
+  size_t encode(uint8_t *buffer,
               size_t buffer_length);
 
   /*
@@ -139,7 +139,7 @@ public:
   This function encodes the payload in to the binary buffer provided as an arg.
   It basically creates a stream and calls pb_encode.
   */
-  size_t encode(org_eclipse_tahu_protobuf_Payload* payload, uint8_t **buffer,
+  size_t encode(org_eclipse_tahu_protobuf_Payload* payload, uint8_t* buffer,
               size_t buffer_length);
   /*
   @brief clear (zeros) the payload and metric data

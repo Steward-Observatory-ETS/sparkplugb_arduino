@@ -32,35 +32,42 @@ void sparkplugb_arduino_encoder::set_payload(org_eclipse_tahu_protobuf_Payload* 
 }
 
 // perform the encoding using the object's payload data
-size_t sparkplugb_arduino_encoder::encode(uint8_t **buffer,
+size_t sparkplugb_arduino_encoder::encode(uint8_t *buffer,
                   size_t buffer_length)
+{
+
+  if(this->payload == NULL) return -1;
+
+  return this->encode(this->payload, buffer, buffer_length);
+}
+
+// perform the encoding using the provided payload data
+size_t sparkplugb_arduino_encoder::encode(
+    org_eclipse_tahu_protobuf_Payload* payload_arg,
+    uint8_t *buffer,
+    size_t buffer_length)
 {
   size_t message_length;
   bool node_status;
-  if(this->payload == NULL) return -1;
+  org_eclipse_tahu_protobuf_Payload* p;
+  pb_ostream_t node_stream;
+
+  if(payload == NULL)
+    p = this->payload;
+  else
+    p = payload_arg;
+
+  if(p == NULL) return -1;
 
   // Create the stream
-  pb_ostream_t node_stream = pb_ostream_from_buffer(*buffer, buffer_length);
-  node_status = pb_encode(&node_stream, org_eclipse_tahu_protobuf_Payload_fields, this->payload);
+  node_stream = pb_ostream_from_buffer(buffer, buffer_length);
+  node_status = pb_encode(&node_stream, org_eclipse_tahu_protobuf_Payload_fields, p);
   message_length = node_stream.bytes_written;
 
   if (!node_status)
     message_length = -1;
 
   return message_length;
-}
-
-// perform the encoding using the provided payload data
-size_t sparkplugb_arduino_encoder::encode(
-    org_eclipse_tahu_protobuf_Payload* payload,
-    uint8_t **buffer,
-    size_t buffer_length)
-{
-  size_t l;
-  org_eclipse_tahu_protobuf_Payload* tmp = this->payload;
-  l = this->encode(buffer, buffer_length);
-  this->payload = tmp;
-  return l;
 }
 
 // assign payload.metrics and payload.metrics_count

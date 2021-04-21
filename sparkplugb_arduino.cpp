@@ -52,7 +52,7 @@ size_t sparkplugb_arduino_encoder::encode(
   org_eclipse_tahu_protobuf_Payload* p;
   pb_ostream_t node_stream;
 
-  if(payload == NULL)
+  if(payload_arg == NULL)
     p = this->payload;
   else
     p = payload_arg;
@@ -81,7 +81,7 @@ bool sparkplugb_arduino_encoder::set_metrics(org_eclipse_tahu_protobuf_Payload_M
 
 // zero out payload and all metrics
 void sparkplugb_arduino_encoder::clear_payload(){
-  int i;
+  unsigned int i;
   if(this->payload == NULL) return;
 
   for(i=0; i<this->payload->metrics_count; i++){
